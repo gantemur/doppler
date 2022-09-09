@@ -26,6 +26,7 @@
 
     function keyb(e) {
         if (e.keyCode == 32) startstop();
+        if (e.keyCode == 82) restart();
     }
 
     function startstop() {
@@ -74,8 +75,8 @@
         document.getElementById('TEXT2').style.width = '' + sWidth + 'px';
         document.getElementById('TEXT3').setAttribute("style", "width:" + sWidth + "px");
         document.getElementById('TEXT3').style.width = '' + sWidth + 'px';
-        document.getElementById('TEXT4').setAttribute("style", "width:" + sWidth + "px");
-        document.getElementById('TEXT4').style.width = '' + sWidth + 'px';
+//        document.getElementById('TEXT4').setAttribute("style", "width:" + sWidth + "px");
+//        document.getElementById('TEXT4').style.width = '' + sWidth + 'px';
 
         if (ring == 0) draw();
     }
@@ -89,7 +90,7 @@
         ring = 0;
         speeder.value = v;
         cpeeder.value = c;
-        freqer.value = freq;
+//        freqer.value = freq;
         dister.value = h;
         skiper.value = skip;
 
@@ -148,6 +149,7 @@
 
     function draw() {
         
+
 
         //freqqer.innerHTML = freqq_text + ": " + tlongsu.toFixed(1);
 
