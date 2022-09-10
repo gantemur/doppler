@@ -27,6 +27,19 @@
     function keyb(e) {
         if (e.keyCode == 32) startstop();
         if (e.keyCode == 82) restart();
+        if (e.keyCode == 77) mute();
+    }
+
+    function mute() {
+        if (sound) {
+            sound  = 0;
+            document.getElementById('MUTE').innerHTML = "&#x1f50a;";
+            gainNode.gain.value = 0;
+        } else {
+            sound  = 1;
+            document.getElementById('MUTE').innerHTML = "&#x1f507;";
+            if (ring) gainNode.gain.value = 1;
+        }
     }
 
     function startstop() {
@@ -39,11 +52,17 @@
     function start() {
         if (ring == 0) timer = window.setInterval(drawplus, speed);
         ring = 1;
+        if (begin) {
+            begin = 0;
+            oscillator.start(0);
+        } 
+        else if (sound) gainNode.gain.value = 1;
     }
 
     function stop() {
         ring = 0;
         window.clearInterval(timer);
+        gainNode.gain.value = 0;
     }
 
     function resize() {
@@ -58,7 +77,7 @@
 //        sWidth = Math.min(sWidth, sHeight);
 //        sHeight = sWidth;
         tHeight = sHeight * hr;
-        if (tHeight > 70) tHeight = 70;
+        if (tHeight > 80) tHeight = 80;
         sHeight -= tHeight;
         ctx.canvas.width = sWidth;
         ctx.canvas.height = sHeight;
@@ -67,16 +86,17 @@
         rescale = sWidth / width;
         x0 = sWidth / 2;
         y0 = sHeight / 2;
-        baseline = tHeight * 0.8;
-        if (baseline < 60) baseline = 60;
+        baseline = tHeight - 10;
+        if (baseline < 0) baseline = tHeight;
+        gscale = (baseline-1) / ampmax;
         document.getElementById('TEXT1').setAttribute("style", "width:" + sWidth + "px");
         document.getElementById('TEXT1').style.width = '' + sWidth + 'px';
         document.getElementById('TEXT2').setAttribute("style", "width:" + sWidth + "px");
         document.getElementById('TEXT2').style.width = '' + sWidth + 'px';
         document.getElementById('TEXT3').setAttribute("style", "width:" + sWidth + "px");
         document.getElementById('TEXT3').style.width = '' + sWidth + 'px';
-//        document.getElementById('TEXT4').setAttribute("style", "width:" + sWidth + "px");
-//        document.getElementById('TEXT4').style.width = '' + sWidth + 'px';
+        document.getElementById('TEXT4').setAttribute("style", "width:" + sWidth + "px");
+        document.getElementById('TEXT4').style.width = '' + sWidth + 'px';
 
         if (ring == 0) draw();
     }
@@ -90,9 +110,10 @@
         ring = 0;
         speeder.value = v;
         cpeeder.value = c;
-//        freqer.value = freq;
+        freqer.value = freq;
         dister.value = h;
         skiper.value = skip;
+        freqqtext = "ажиглагдах давтамж";
 
         Ex = -width/2;
         Ey = 0 ;
@@ -104,16 +125,26 @@
         wavx = [];
         wavy = [];
         wavcnt = 0;
+        gx = [];
+        gy = [];
         
         document.addEventListener("keydown", keyb)
         window.addEventListener("orientationchange", resize, false);
         window.addEventListener("resize", resize, false);
         resize();
+
+        oscillator.type = "triangle"; // sine, square, sawthooth, triangle
+        oscillator.frequency.value = freq;
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+
+//        gainNode.gain.linearRampToValueAtTime(0.0001, context.currentTime + duration);
+
     }
 
     function restart() {
         stop();
-
+        
         Ex = -width/2;
         Ey = 0 ;
         Rx = 0;
@@ -134,7 +165,36 @@
         t += dt;
         Ex += v*dt;
         if (Ex > width/2) stop();
+
+        //Waves
+        var cnt = 0;
+        var r, rr;
+//        n0 = wavx.length - wavlen;
+//        if (n0 < 0) n0 = 0;        
+        for (i = wavx.length - 1; i > 0; i--) {
+            r = (t-wavt[i])*c;
+            rr = (wavx[i]-Rx)*(wavx[i]-Rx) + (wavy[i]-Ry)*(wavy[i]-Ry);
+            if (r*r>rr) cnt += 1;
+        }
+        var amp = cnt - wavcnt;
+        if (amp < 0) amp = 0;
+        wavcnt = cnt;
+        gx.push(Ex);
+        gy.push(amp);
+        if (amp > ampmax) {
+            ampmax = amp;
+            gscale = (baseline-1) / ampmax;
+        }   
+
         draw();
+        var d = - Ex;
+        var cosine = d / Math.sqrt(d*d + h*h);
+        var ratio = 1 - v * cosine / c;
+        freqq = freq / ratio;
+        //oscillator.frequency.value = freqq;
+        oscillator.frequency.setValueAtTime(freqq, 0);
+        freqqer.innerHTML = freqqtext + ": " + freqq.toFixed(1) + 'Гц';
+
         steps += 1;
         if ((steps-1) % skip) return;
         wavt.push(t);
@@ -162,30 +222,24 @@
         ctx.fill();
 
         //Waves
-        var cnt = 0;
         var opp = 1;
-        var dopp, r, rr;
+        var dopp, r;
         if (wavlen > 0) dopp = 0.99 / wavlen;
         else dopp = 1;
         n0 = wavx.length - wavlen;
         if (n0 < 0) n0 = 0;        
-        for (i = wavx.length - 1; i > 0; i--) {
+        for (i = wavx.length - 1; i > n0; i--) {
             r = (t-wavt[i])*c;
-            rr = (wavx[i]-Rx)*(wavx[i]-Rx) + (wavy[i]-Ry)*(wavy[i]-Ry);
-            if (r*r>rr) cnt += 1;
             ctx.strokeStyle = wav_style + opp + ')';
             ctx.beginPath();
             ctx.arc(x0+wavx[i]*rescale, y0+wavy[i]*rescale, r*rescale, 0, Math.PI * 2, false);
             ctx.stroke();
             opp -= dopp;
         }
-        var amp = cnt - wavcnt;
-        if (amp < 0) amp = 0;
-        wavcnt = cnt;
         
         //Reciever
         var dr = 0;
-        if (amp > 0) {
+        if (gy[gy.length-1] > 0) {
             dr = 3;
             ctx.fillStyle = rec_style;
         } else 
@@ -195,16 +249,12 @@
         ctx.fill();
 
         //Graph
-        var x = x0 + Ex * rescale;
-        var y = baseline - amp * 20;
-        gx.push(x);
-        gy.push(y);
         ctxx.clearRect(0, 0, sWidth, tHeight); // clear canvas
         ctxx.fillStyle = rec_style;
         ctxx.strokeStyle = rec_style;
         ctxx.beginPath();
-        ctxx.moveTo(gx[0], gy[0]);
+        ctxx.moveTo(x0+gx[0]*rescale, baseline-gy[0]*gscale);
         for (i=1; i<gx.length; i++)
-            ctxx.lineTo(gx[i], gy[i]);
+            ctxx.lineTo(x0+gx[i]*rescale, baseline-gy[i]*gscale);
         ctxx.stroke();
     }

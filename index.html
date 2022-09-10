@@ -17,15 +17,15 @@
       <input type="number" id="SPEED" name="SPEED" onchange="speed_change()" />
     </div>
     <div>
-      <label for="CPEED" class="left">дууны хурд</label>
-      <input type="number" id="CPEED" name="CPEED" onchange="cpeed_change()" />
+      <label class="left">ажиглагч</label>
+      <input type="number" id="DIST" name="DIST" onchange="dist_change()" />
     </div>
   </div>
 
   <div id="TEXT2" class="textcontainer">
     <div>
-      <label class="left">ажиглагч</label>
-      <input type="number" id="DIST" name="DIST" onchange="dist_change()" />
+      <label for="CPEED" class="left">дууны хурд</label>
+      <input type="number" id="CPEED" name="CPEED" onchange="cpeed_change()" />
     </div>
     <div>
       <label class="left">долгионы урт</label>
@@ -35,17 +35,11 @@
 
   <div id="TEXT3" class="textcontainer">
     <div>
-<!--      <label for="FREQ" class="left">давтамж</label>
-      <input type="number" id="FREQ" name="FREQ" onchange="freq_change()" /> -->
+      <label for="FREQ" class="left">давтамж</label>
+      <input type="number" id="FREQ" name="FREQ" onchange="freq_change()" />
     </div> 
     <button id ="STOP" class="button" onclick="restart()">анхны байрлал</button>
   </div> 
-
-<!--  <div id="TEXT4" class="textcontainer">
-    <div>
-      <label class="left" id="FREQQ">ажиглагдах давтамж: </label>
-    </div>
-  </div> -->
 
   <div id="CCONT" width="300" height="300" class="canvascontainer">
     <canvas id="canvas" width="300" height="200" class="canvas" onclick="startstop()">
@@ -58,7 +52,17 @@
     </canvas>
   </div>
 
+  <div id="TEXT4" class="textcontainer">
+    <div>
+      <label class="left" id="FREQQ">ажиглагдах давтамж: </label>
+    </div>
+    <button id ="MUTE" class="button" onclick="mute()">&#x1f507;</button>
+  </div> 
+
   <script>
+    var context = new AudioContext();
+    var oscillator = context.createOscillator();
+    var gainNode = context.createGain();
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
     var canvass = document.getElementById('canvass');
@@ -67,8 +71,8 @@
     var cpeeder = document.getElementById("CPEED");
     var dister = document.getElementById("DIST");
     var skiper = document.getElementById("SKIP");
-//    var freqer = document.getElementById("FREQ");
-//    var freqqer = document.getElementById("FREQQ");
+    var freqer = document.getElementById("FREQ");
+    var freqqer = document.getElementById("FREQQ");
     var vpadding = 150;
     var wav_style = 'rgba(200, 200, 0,'; //Waves
     var emi_style = 'rgba(240, 240, 0, .7)'; //Emitter
@@ -94,16 +98,21 @@
     var steps = 0;
     var skip = 15;
     var ring = 0;
+    var begin = 1;
+    var sound = 1;
     var timer;
     var speed = 50;
-    var freq = 440;
+    var freq = 500;
+    var freqq;
     var wavmaxlen = 50;
     var wavlen = 15;
     var wavt = [];
     var wavx = [];
     var wavy = [];
     var baseline;
+    var ampmax = 3;
     var wavcnt = 0;
+    var gscale = 20;
     var gx = [];
     var gy = [];
 
