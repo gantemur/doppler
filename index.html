@@ -106,7 +106,7 @@
     var timer;
     var speed = 50;
     var freq = 350;
-    var freqq;
+    var freqq,freqqq;
     var wavmaxlen = 50;
     var wavlen = 15;
     var wavt = [];
@@ -120,6 +120,11 @@
     var gy = [];
     var gleft = 1;
     var gright = 1;
+
+    var vv = v*v;
+    var cc = c*c;
+    var ww = cc - vv;
+
 
     const rpd = Math.PI / 180;
     const dpr = 180 / Math.PI;

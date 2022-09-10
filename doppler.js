@@ -1,10 +1,14 @@
     function speed_change() {
         v = parseInt(speeder.value);
+        vv = v*v;
+        ww = cc - vv;
         draw();
     }
 
     function cpeed_change() {
         c = parseInt(cpeeder.value);
+        cc = c*c;
+        ww = cc - vv;
         draw();
     }
 
@@ -206,20 +210,62 @@
         }   
 
         draw();
-        var d = - Ex;
-        var cosine = d / Math.sqrt(d*d + h*h);
-        var ratio = 1 - v * cosine / c;
-        freqq = freq / ratio;
-        //oscillator.frequency.value = freqq;
-        oscillator.frequency.setValueAtTime(freqq, 0);
-        oscillatorx.frequency.setValueAtTime(freqq, 0);
-        freqqer.innerHTML = freqqtext + ": " + freqq.toFixed(1) + 'Гц';
-        var r = Ex*2/width;
-        gleft = 1 - r;
-        gright = 1 + r;
-        if (sound) {
-            gainL.gain.value = gleft;
-            gainR.gain.value = gright;
+        var xx = Ex*Ex;
+        var xv = 2*Ex*v;
+        var ll = xx+h*h;
+        var D = 4*(xx*vv+ww*ll)
+        var fn = 0;
+        var tt,ttt;
+        if (v==c&&Ex>0) {
+            fn = 1;
+            tt = ll / xv;        
+        } else if (ww>0) {
+                fn = 1;
+                tt = (Math.sqrt(D)-xv) / (2*ww);
+        } else if (ww<0&&D>0&&Ex>0) {
+            fn = 2;
+            tt = (Math.sqrt(D)+xv) / (-2*ww);
+            ttt = (Math.sqrt(D)-xv) / (2*ww);
+        }
+        if (fn==0) {
+            gleft = 0;
+            gright = 0;
+            gainL.gain.value = 0;
+            gainR.gain.value = 0;
+            freqqer.innerHTML = "дуу нь ажиглагчид хараахан хүрээгүй байна";
+        } else if (fn == 1) {
+            var d = v*tt - Ex;
+            var cosine = d / Math.sqrt(d*d + h*h);
+            var ratio = 1 - v * cosine / c;
+            freqq = freq / ratio;
+            oscillator.frequency.setValueAtTime(freqq, 0);
+            oscillatorx.frequency.setValueAtTime(freqq, 0);
+            freqqer.innerHTML = freqqtext + ": " + freqq.toFixed(1) + 'Гц';
+            var r = d*2/width;
+            gleft = 1 - r;
+            gright = 1 + r;
+            if (sound) {
+                gainL.gain.value = gleft;
+                gainR.gain.value = gright;
+            }
+        } else {
+            var d =  v*tt - Ex;
+            var cosine = d / Math.sqrt(d*d + h*h);
+            var ratio = v * cosine / c - 1;
+            freqq = freq / ratio;
+            oscillator.frequency.setValueAtTime(freqq, 0);
+            d = Ex - v*ttt;
+            cosine = d / Math.sqrt(d*d + h*h);
+            ratio = v * cosine / c + 1;
+            freqqq = freq / ratio;
+            oscillatorx.frequency.setValueAtTime(freqqq, 0);
+            freqqer.innerHTML = freqqtext + ": " + freqq.toFixed(1) + 'Гц + ' + freqqq.toFixed(1) + 'Гц';
+            gleft = 1;
+            gright = 1;
+            if (sound) {
+                gainL.gain.value = gleft;
+                gainR.gain.value = gright;
+            }
         }
 
         steps += 1;
