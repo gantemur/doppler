@@ -34,11 +34,15 @@
         if (sound) {
             sound  = 0;
             document.getElementById('MUTE').innerHTML = "&#x1f50a;";
-            gainNode.gain.value = 0;
+            gainL.gain.value = 0;
+            gainR.gain.value = 0;
         } else {
             sound  = 1;
             document.getElementById('MUTE').innerHTML = "&#x1f507;";
-            if (ring) gainNode.gain.value = 1;
+            if (ring) {
+                gainL.gain.value = gleft;
+                gainR.gain.value = gright;
+            }
         }
     }
 
@@ -55,14 +59,19 @@
         if (begin) {
             begin = 0;
             oscillator.start(0);
+            oscillatorx.start(0);
         } 
-        else if (sound) gainNode.gain.value = 1;
+        else if (sound) {
+            gainL.gain.value = gleft;
+            gainR.gain.value = gright;
+        }
     }
 
     function stop() {
         ring = 0;
         window.clearInterval(timer);
-        gainNode.gain.value = 0;
+        gainL.gain.value = 0;
+        gainR.gain.value = 0;
     }
 
     function resize() {
@@ -135,8 +144,15 @@
 
         oscillator.type = "triangle"; // sine, square, sawthooth, triangle
         oscillator.frequency.value = freq;
-        oscillator.connect(gainNode);
-        gainNode.connect(context.destination);
+        oscillator.connect(gainL);
+        gainL.gain.value = gleft;
+        gainL.connect(merger,0,0);
+        oscillatorx.type = "triangle"; // sine, square, sawthooth, triangle
+        oscillatorx.frequency.value = 1000;
+        oscillatorx.connect(gainR);
+        gainR.gain.value = gright;
+        gainR.connect(merger,0,1);
+        merger.connect(context.destination);
 
 //        gainNode.gain.linearRampToValueAtTime(0.0001, context.currentTime + duration);
 
@@ -164,7 +180,10 @@
     function drawplus() {
         t += dt;
         Ex += v*dt;
-        if (Ex > width/2) stop();
+        if (Ex*2 > width) {
+            stop();
+            return;
+        }
 
         //Waves
         var cnt = 0;
@@ -193,7 +212,13 @@
         freqq = freq / ratio;
         //oscillator.frequency.value = freqq;
         oscillator.frequency.setValueAtTime(freqq, 0);
+        oscillatorx.frequency.setValueAtTime(freqq, 0);
         freqqer.innerHTML = freqqtext + ": " + freqq.toFixed(1) + 'Гц';
+        var r = Ex*2/width;
+        gleft = 1 - r;
+        gright = 1 + r;
+        gainL.gain.value = gleft;
+        gainR.gain.value = gright;
 
         steps += 1;
         if ((steps-1) % skip) return;
@@ -209,10 +234,6 @@
 
     function draw() {
         
-
-
-        //freqqer.innerHTML = freqq_text + ": " + tlongsu.toFixed(1);
-
         ctx.clearRect(0, 0, sWidth, sHeight); // clear canvas
 
         //Emitter

@@ -62,7 +62,10 @@
   <script>
     var context = new AudioContext();
     var oscillator = context.createOscillator();
-    var gainNode = context.createGain();
+    var oscillatorx = context.createOscillator();
+    var gainL = context.createGain();
+    var gainR = context.createGain();
+    var merger = new ChannelMergerNode(context, { numberOfInputs: 2 });
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
     var canvass = document.getElementById('canvass');
@@ -115,6 +118,8 @@
     var gscale = 20;
     var gx = [];
     var gy = [];
+    var gleft = 1;
+    var gright = 1;
 
     const rpd = Math.PI / 180;
     const dpr = 180 / Math.PI;
