@@ -217,8 +217,10 @@
         var r = Ex*2/width;
         gleft = 1 - r;
         gright = 1 + r;
-        gainL.gain.value = gleft;
-        gainR.gain.value = gright;
+        if (sound) {
+            gainL.gain.value = gleft;
+            gainR.gain.value = gright;
+        }
 
         steps += 1;
         if ((steps-1) % skip) return;
