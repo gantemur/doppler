@@ -130,7 +130,7 @@
 
         Ex = -width/2;
         Ey = 0 ;
-        Rx = 0;
+        Rx = -width/6;
         Ry = h;
         t = 0;
         steps = 0;
@@ -167,8 +167,6 @@
         
         Ex = -width/2;
         Ey = 0 ;
-        Rx = 0;
-        Ry = h;
         t = 0;
         steps = 0;
         wavt = [];
@@ -210,19 +208,20 @@
         }   
 
         draw();
-        var xx = Ex*Ex;
-        var xv = 2*Ex*v;
+        var x = Ex - Rx;
+        var xx = x*x;
+        var xv = 2*x*v;
         var ll = xx+h*h;
         var D = 4*(xx*vv+ww*ll)
         var fn = 0;
         var tt,ttt;
-        if (v==c&&Ex>0) {
+        if (v==c&&x>0) {
             fn = 1;
             tt = ll / xv;        
         } else if (ww>0) {
                 fn = 1;
                 tt = (Math.sqrt(D)-xv) / (2*ww);
-        } else if (ww<0&&D>0&&Ex>0) {
+        } else if (ww<0&&D>0&&x>0) {
             fn = 2;
             tt = (Math.sqrt(D)+xv) / (-2*ww);
             ttt = (Math.sqrt(D)-xv) / (2*ww);
@@ -234,7 +233,7 @@
             gainR.gain.value = 0;
             freqqer.innerHTML = "дуу нь ажиглагчид хараахан хүрээгүй байна";
         } else if (fn == 1) {
-            var d = v*tt - Ex;
+            var d = v*tt - x;
             var cosine = d / Math.sqrt(d*d + h*h);
             var ratio = 1 - v * cosine / c;
             freqq = freq / ratio;
@@ -249,12 +248,12 @@
                 gainR.gain.value = gright;
             }
         } else {
-            var d =  v*tt - Ex;
+            var d =  v*tt - x;
             var cosine = d / Math.sqrt(d*d + h*h);
             var ratio = v * cosine / c - 1;
             freqq = freq / ratio;
             oscillator.frequency.setValueAtTime(freqq, 0);
-            d = Ex - v*ttt;
+            d = x - v*ttt;
             cosine = d / Math.sqrt(d*d + h*h);
             ratio = v * cosine / c + 1;
             freqqq = freq / ratio;
