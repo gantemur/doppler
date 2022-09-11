@@ -160,30 +160,3 @@
         font-size: 20px;
         color: black;
     }
-
-    #YEAR {
-        width: 50px;
-    }
-
-    #MONTH {
-        width: 30px;
-    }
-
-    #DAY {
-        width: 30px;
-    }
-
-    @media only screen and (max-device-width: 480px) {
-        #YEAR {
-            width: 30px;
-        }
-
-        #MONTH {
-            width: 20px;
-        }
-
-        #DAY {
-            width: 20px;
-        }
-
-    }
