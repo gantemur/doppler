@@ -1,16 +1,7 @@
 function setskip() {
-    if (v <= 100) 
-        skip = 20;
-    else if (v >= 800) 
-        skip = 2;
-    else {
-        skip = Math.floor(2000 / v);
-    }
-    if (v > 500) 
-        wavlen = 20;
-    if (v > 650) 
-        wavlen = 25;
-    }
+    skip = 20;
+    wavlen = 15;
+}
 
 function speed_change() {
     v = parseInt(speeder.value);
@@ -171,35 +162,37 @@ function draw() {
     ctx.fill();
 
     //Waves
-    var opp = 1;
-    var dopp,
-        r;
-    if (wavlen > 0) 
-        dopp = 0.99 / wavlen;
-    else 
-        dopp = 1;
     n0 = wavx.length - wavlen;
     if (n0 < 0) 
         n0 = 0;
     ctx.lineWidth = 5;
-    for (i = wavx.length - 1; i > n0; i--) {
-        r = (t - wavt[i]) * c;
-        for (var theta = 0; theta < ppi; theta += dtheta) {
-            var cosine = Math.cos(theta);
-            var ll = nm * gamma * (1 - beta * cosine);
-            ctx.strokeStyle = nm2color(ll)[0];
+    for (var theta = 0; theta < ppi; theta += dtheta) {
+        var cosine = Math.cos(theta);
+        var ll = nm * gamma * (1 - beta * cosine);
+        var s = nm2color(ll);
+        var st = 'rgba(' + s[1] * 100 + '%,' + s[2] * 100 + '%,' + s[3] * 100 + '%,';
+        var opp = s[4];
+        var dopp,
+            r;
+        if (wavlen > 0) 
+            dopp = opp / wavlen;
+        else 
+            dopp = 1;
+        for (i = wavx.length - 1; i > n0; i--) {
+            r = (t - wavt[i]) * c;
+            ctx.strokeStyle = st + opp + ')';
             ctx.beginPath();
             ctx.arc(
                 x0 + wavx[i] * rescale,
                 y0 + wavy[i] * rescale,
                 r * rescale,
                 theta,
-                theta + dthetad,
+                theta + dtheta,
                 false
             );
             ctx.stroke();
+            opp -= dopp;
         }
-        opp -= dopp;
     }
 
     //Reciever
