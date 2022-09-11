@@ -1,7 +1,18 @@
+    function setskip() {
+        if (v<=100) skip = 20;
+        else if (v>=800) skip = 2;
+        else {
+            skip = Math.floor(2000/v);
+        }
+        if (v>500) wavlen = 20;
+        if (v>650) wavlen = 25;
+    }
+
     function speed_change() {
         v = parseInt(speeder.value);
         vv = v*v;
         ww = cc - vv;
+        setskip();
         draw();
     }
 
@@ -15,11 +26,6 @@
     function dist_change() {
         h = parseInt(dister.value);
         Ry = h;
-        draw();
-    }
-
-    function skip_change() {
-        skip = parseInt(skiper.value);
         draw();
     }
 
@@ -108,8 +114,6 @@
         document.getElementById('TEXT2').style.width = '' + sWidth + 'px';
         document.getElementById('TEXT3').setAttribute("style", "width:" + sWidth + "px");
         document.getElementById('TEXT3').style.width = '' + sWidth + 'px';
-        document.getElementById('TEXT4').setAttribute("style", "width:" + sWidth + "px");
-        document.getElementById('TEXT4').style.width = '' + sWidth + 'px';
 
         if (ring == 0) draw();
     }
@@ -125,8 +129,9 @@
         cpeeder.value = c;
         freqer.value = freq;
         dister.value = h;
-        skiper.value = skip;
         freqqtext = "ажиглагдах давтамж";
+
+        setskip();
 
         Ex = -width/2;
         Ey = 0 ;

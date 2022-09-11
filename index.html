@@ -28,18 +28,10 @@
       <input type="number" id="CPEED" name="CPEED" onchange="cpeed_change()" />
     </div>
     <div>
-      <label class="left">долгионы урт</label>
-      <input type="number" id="SKIP" name="SKIP" onchange="skip_change()" />
-    </div>
-  </div>
-
-  <div id="TEXT3" class="textcontainer">
-    <div>
       <label for="FREQ" class="left">давтамж</label>
       <input type="number" id="FREQ" name="FREQ" onchange="freq_change()" />
     </div> 
-    <button id ="STOP" class="button" onclick="restart()">анхны байрлал</button>
-  </div> 
+  </div>
 
   <div id="CCONT" width="300" height="300" class="canvascontainer">
     <canvas id="canvas" width="300" height="200" class="canvas" onclick="startstop()">
@@ -52,10 +44,11 @@
     </canvas>
   </div>
 
-  <div id="TEXT4" class="textcontainer">
+  <div id="TEXT3" class="textcontainer">
     <div>
       <label class="left" id="FREQQ">ажиглагдах давтамж: </label>
     </div>
+    <button id ="STOP" class="button" onclick="restart()">&#8634;</button>
     <button id ="MUTE" class="button" onclick="mute()">&#x1f507;</button>
   </div> 
 
@@ -73,7 +66,6 @@
     var speeder = document.getElementById("SPEED");
     var cpeeder = document.getElementById("CPEED");
     var dister = document.getElementById("DIST");
-    var skiper = document.getElementById("SKIP");
     var freqer = document.getElementById("FREQ");
     var freqqer = document.getElementById("FREQQ");
     var vpadding = 150;
@@ -86,28 +78,28 @@
     var gra_style = 'rgba(255, 255, 0, 1)'; //Graphics
     var hr = 0.2;
     var sHeight, sWidth, tHeight;
-    var v = 40;
-    var c = 50;
+    var v = 100;
+    var c = 343;
     var x0 = 150;
     var y0 = 150;
-    var width = 1000;
+    var width = 2000;
     var h = 100;
     var Ex = -width/2;
     var Ey = 0 ;
     var Rx = -width/6;
     var Ry = h;
-    var t = 0;
-    var dt = 0.1;
-    var steps = 0;
-    var skip = 15;
     var ring = 0;
     var begin = 1;
     var sound = 1;
     var timer;
-    var speed = 50;
+    var speed = 30;
+    var t = 0;
+    var dt = speed*0.001;
+    var steps = 0;
+    var skip = 20;
     var freq = 350;
     var freqq,freqqq;
-    var wavmaxlen = 50;
+    var wavmaxlen = 40;
     var wavlen = 15;
     var wavt = [];
     var wavx = [];
