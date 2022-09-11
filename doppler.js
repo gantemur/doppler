@@ -245,7 +245,9 @@
             oscillator.frequency.setValueAtTime(freqq, 0);
             oscillatorx.frequency.setValueAtTime(freqq, 0);
             freqqer.innerHTML = freqqtext + ": " + freqq.toFixed(1) + 'Гц';
-            var r = d/Rx;
+            var r = d/width;
+            if (r < -1) r = -1;
+            else if (r > 1) r = 1;
             gleft = 1 - r;
             gright = 1 + r;
             if (sound) {
