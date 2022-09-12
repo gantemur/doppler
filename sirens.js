@@ -9,7 +9,7 @@
     }
 
     function speed_change() {
-        v = parseInt(speeder.value);
+        v = parseInt(speeder.value)/3.6;
         vv = v*v;
         ww = cc - vv;
         setskip();
@@ -103,7 +103,7 @@
 
     function init() {
         ring = 0;
-        speeder.value = v;
+        speeder.value = (v*3.6).toFixed(0);
         dister.value = h;
 
         setskip();
@@ -113,12 +113,12 @@
         window.addEventListener("resize", resize, false);
         resize();
 
-        oscillator.type = "sawtooth"; // sine, square, sawthooth, triangle
+        oscillator.type = "triangle"; // sine, square, sawthooth, triangle
         oscillator.frequency.value = freq;
         oscillator.connect(gainL);
         gainL.gain.value = 0;
         gainL.connect(merger,0,0);
-        oscillatorx.type = "sawtooth"; // sine, square, sawthooth, triangle
+        oscillatorx.type = "triangle"; // sine, square, sawthooth, triangle
         oscillatorx.frequency.value = freq;
         oscillatorx.connect(gainR);
         gainR.gain.value = 0;

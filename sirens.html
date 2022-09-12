@@ -30,7 +30,7 @@
     <div>
       <label class="left">машины хурд</label>
       <input type="number" id="SPEED" name="SPEED" onchange="speed_change()" />
-      <label>м/с</label>
+      <label>км/цаг</label>
     </div>
     <button id ="STOP" class="button" onclick="restart()">&#8634;</button>
   </div> 
@@ -54,15 +54,15 @@
     var recc_style = 'rgba(0, 255, 255, 1)'; //Reciever
     var rec_rad = 3;
     var sHeight, sWidth;
-    var v = 40;
+    var v = 20;
     var c = 343;
     var x0 = 150;
     var y0 = 150;
     var width = 2000;
-    var h = 50;
+    var h = 20;
     var Ex = -width/2;
     var Ey = 0 ;
-    var Rx = -width/4;
+    var Rx = -width*.4;
     var Ry = h;
     var rescale = 1.7;
     var ring = 0;
@@ -77,8 +77,8 @@
     var freq = 350;
     var freq1 = 650; //650-750
     var freq2 = 900; // 900-1000
-    var t1 = .4;
-    var t2 = .6;
+    var t1 = .5;
+    var t2 = .5;
     var tp = t1 + t2;
     var freqq,freqqq;
     var wavmaxlen = 40;
