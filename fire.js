@@ -9,7 +9,7 @@
     }
 
     function speed_change() {
-        v = parseInt(speeder.value);
+        v = parseInt(speeder.value)/3.6;
         vv = v*v;
         ww = cc - vv;
         setskip();
@@ -103,7 +103,7 @@
 
     function init() {
         ring = 0;
-        speeder.value = v;
+        speeder.value = (v*3.6).toFixed(0);
         dister.value = h;
 
         setskip();
